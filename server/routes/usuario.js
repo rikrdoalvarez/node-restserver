@@ -1,12 +1,130 @@
 const express = require('express');
-const Usuario = require('../models/usuario');
 const bcrypt = require('bcrypt');
+const Usuario = require('../models/usuario');
+const { verificaToken, verificaAdminRole } = require('../middlewares/autenticacion');
 const _ = require('underscore');
 const app = express();
 
+/**
+ * @swagger
+ * tags:
+ *   name: usuario
+ *   description: Usuarios de la aplicación
+ */
 
-app.get('/usuario', function(req, res) {
-    //res.json('get Usuario LOCAL');
+/**
+ * @swagger
+ * path:
+ *  /usuario:
+ *    get:
+ *      summary: Consulta de usuarios activos
+ *      tags: [usuario]
+ *      #parameters:
+ *         # - in: query
+ *           #   name: usuario
+ *           #   schema:
+ *           #       type: string
+ *           #       enum: [approved, pending, closed, new]
+ *           #       example: approved 
+ *      responses: 
+ *          '200':
+ *              description: Usuarios activos
+ *              content:
+ *                  application/json:
+ *                      example: 
+ *                          ok: true
+ *                          usuarios: 
+ *                              _id: 5ea96bbf0381d906ff69e58e
+ *                              nombre: Usuario de prueba
+ *                              email: mail@mail.com
+ *                              role: USER_ROLE
+ *                              estado: true
+ *                              google: false
+ *                          cuantos: 1
+ *          '400':
+ *              description: Error
+ *              content:
+ *                  application/json:
+ *                      example:
+ *                          ok: false
+ *                          err: Descripción del error
+ *    post:
+ *      summary: Crear nuevo usuario 
+ *      tags: [usuario]
+ *      responses: 
+ *          '200':
+ *              description: Usuario creado
+ *              content:
+ *                  application/json:
+ *                      example: 
+ *                          ok: true
+ *                          usuarios: 
+ *                              _id: 5ead39d101b0b3835e21dfcb
+ *                              nombre: Usuario de prueba
+ *                              email: mail@mail.com
+ *                              role: USER_ROLE
+ *                              estado: true
+ *                              google: false
+ *  /usuario{id}:
+ *    put:
+ *      summary: Actualizar usuario
+ *      tags: [usuario]
+ *      responses: 
+ *          '200':
+ *              description: Usuario actualizado
+ *              content:
+ *                  application/json:
+ *                      example: 
+ *                          ok: true
+ *                          usuarios: 
+ *                              _id: 5ead39d101b0b3835e21dfcb
+ *                              nombre: Usuario de prueba
+ *                              email: mail@mail.com
+ *                              role: USER_ROLE
+ *                              estado: true
+ *                              google: false
+ *    delete:
+ *      summary: Eliminar usuario
+ *      tags: [usuario]
+ *      responses: 
+ *          '200':
+ *              description: Usuario eliminado
+ *              content:
+ *                  application/json:
+ *                      example: 
+ *                          ok: true
+ *                          usuarios: 
+ *                              _id: 5ead39d101b0b3835e21dfcb
+ *                              nombre: Usuario de prueba
+ *                              email: mail@mail.com
+ *                              role: USER_ROLE
+ *                              estado: true
+ *                              google: false
+ * 
+ * 
+ */
+//  * 
+//  *    post:
+//  *      summary: Create a new user
+//  *      tags: [usuario]
+//  *      requestBody:
+//  *        required: true
+//  *        content:
+//  *          application/json:
+//  *            schema:
+//  *              $ref: '#/server/schemas/User'
+//  *      responses:
+//  *        "200":
+//  *          description: A user schema
+//  *          content:
+//  *            application/json:
+//  *              schema:
+//  *                $ref: '#/components/schemas/User'
+//  */
+
+
+app.get('/usuario', verificaToken, (req, res) => {
+
     let desde = req.query.desde || 0;
     desde = Number(desde);
 
@@ -33,7 +151,7 @@ app.get('/usuario', function(req, res) {
         });
 });
 
-app.post('/usuario', function(req, res) {
+app.post('/usuario', [verificaToken, verificaAdminRole], (req, res) => {
     let body = req.body;
     let usuario = new Usuario({
         nombre: body.nombre,
@@ -57,7 +175,7 @@ app.post('/usuario', function(req, res) {
     });
 });
 
-app.put('/usuario/:id', function(req, res) {
+app.put('/usuario/:id', [verificaToken, verificaAdminRole], (req, res) => {
     let id = req.params.id;
     let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
 
@@ -77,7 +195,7 @@ app.put('/usuario/:id', function(req, res) {
 
 });
 
-app.delete('/usuario/:id', function(req, res) {
+app.delete('/usuario/:id', [verificaToken, verificaAdminRole], (req, res) => {
     //res.json('delete Usuario');
     let id = req.params.id;
     //Eliminación física:

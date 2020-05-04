@@ -7,6 +7,45 @@ let rolesValidos = {
     message: '{VALUE} no es un rol válido'
 }
 
+/**
+ * @swagger
+ *  components:
+ *    schemas:
+ *      usuario:
+ *        type: object
+ *        required:
+ *          - nombre
+ *          - email
+ *          - password
+ *        properties:
+ *          nombre:
+ *            type: string
+ *          email:
+ *            type: string
+ *            unique: true
+ *          password:
+ *            type: string
+ *          img:
+ *            type: string
+ *          role:
+ *            type: string
+ *            default: 'USER_ROLE'
+ *          estado:
+ *            type: boolean
+ *            default: true
+ *          google:
+ *            type: boolean
+ *            default: false
+ *        example:
+ *           nombre: Nombre Usuario
+ *           email: correo@email.com
+ *           password: 123456
+ *           img: imgString
+ *           role: USER_ROLE
+ *           estado: true
+ *           google: false
+ */
+
 let usuarioSchema = new Schema({
     nombre: {
         type: String,
