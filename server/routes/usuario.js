@@ -170,7 +170,31 @@ app.post('/usuario', [verificaToken, verificaAdminRole], (req, res) => {
         //usuarioDB.password = null;
         res.json({
             ok: true,
-            usaurio: usuarioDB
+            usuario: usuarioDB
+        });
+    });
+});
+
+app.post('/usuarioAdm', (req, res) => {
+    let body = req.body;
+    let usuario = new Usuario({
+        nombre: body.nombre,
+        email: body.email,
+        password: bcrypt.hashSync(body.password, 10),
+        role: 'ADMIN_ROLE'
+    });
+
+    usuario.save((err, usuarioDB) => {
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                err
+            });
+        }
+        //usuarioDB.password = null;
+        res.json({
+            ok: true,
+            usuario: usuarioDB
         });
     });
 });
@@ -192,7 +216,6 @@ app.put('/usuario/:id', [verificaToken, verificaAdminRole], (req, res) => {
             usuario: usuarioDB
         });
     });
-
 });
 
 app.delete('/usuario/:id', [verificaToken, verificaAdminRole], (req, res) => {

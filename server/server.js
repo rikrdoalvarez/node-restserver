@@ -11,9 +11,9 @@ const swaggerOptions = {
     swaggerDefinition: {
         openapi: '3.0.0',
         info: {
-            title: 'RESTServer API para mantención de usuarios',
+            title: 'RESTServer',
             // version: '1.0.0',
-            description: 'Esta API contiene el CRUD de la información del usuario' //,
+            description: 'API de ejemplo' //,
                 // license: {
                 //     name: 'MIT',
                 //     url: 'https://choosealicense.com/licenses/mit/'
@@ -28,7 +28,7 @@ const swaggerOptions = {
             url: 'http://localhost:3000'
         }]
     },
-    apis: ['./server/models/usuario.js', './server/routes/usuario.js']
+    apis: ['./server/models/usuario.js', './server/routes/usuario.js', './server/models/categoria.js', './server/routes/categoria.js']
 };
 // const swaggerDocs = swaggerJsDoc(swaggerOptions);
 // app.use('/docs', swaggerUi.serve);
@@ -53,7 +53,6 @@ app.use(express.static(path.resolve(__dirname, '../public')));
 
 // Configuración global de rutas
 app.use(require('./routes/index'));
-
 
 
 mongoose.connect(process.env.URLDB, {
